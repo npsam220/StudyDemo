@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>社員更新</title>
+
+    <!-- React CDN -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+
+    <!-- axios -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+
+<body>
+<div id="root"></div>
+<script type="text/babel">
+
+    function App() {
+
+      // 🔹 更新用 state
+      const [employee, setEmployee] = React.useState({
+        id: "",
+        name: "",
+        age: "",
+        department: "",
+        email: ""
+      });
+
+      // 🔹 輸入變更
+      const handleChange = (e) => {
+        setEmployee({
+          ...employee,
+          [e.target.name]: e.target.value
+        });
+      };
+
+      // 🔹 查詢單筆（用 ID）
+      const handleFind = async () => {
+        try {
+          const res = await axios.get(`/employees/${employee.id}`);
+          setEmployee(res.data);
+        } catch (err) {
+          console.error(err);
+          alert("データが見つかりません");
+        }
+      };
+
+      // 🔹 更新
+      const handleUpdate = async () => {
+        try {
+          await axios.put(`/employees/${employee.id}`, employee);
+          alert("更新成功！");
+        } catch (err) {
+          console.error(err);
+          alert("更新失敗");
+        }
+      };
+
+      return (
+        <div>
+          <h2>社員更新</h2>
+
+          <div>
+            <input name="id" placeholder="ID" onChange={handleChange} />
+            <button onClick={handleFind}>検索</button>
+          </div>
+
+          <br/>
+
+          <div>
+            <input name="name" value={employee.name} onChange={handleChange} />
+            <input name="age" value={employee.age} onChange={handleChange} />
+            <input name="department" value={employee.department} onChange={handleChange} />
+            <input name="email" value={employee.email} onChange={handleChange} />
+
+            <button onClick={handleUpdate}>更新</button>
+          </div>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+
+</script>

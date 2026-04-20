@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>社員削除</title>
+
+    <!-- React CDN -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+
+    <!-- axios -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+
+    function App() {
+
+      const [id, setId] = React.useState("");
+
+      const handleDelete = async () => {
+        if (!id) {
+          alert("IDを入力してください");
+          return;
+        }
+
+        if (!confirm("本当に削除しますか？")) return;
+
+        try {
+          await axios.delete(`/employees/${id}`);
+          alert("削除成功！");
+          setId("");
+        } catch (err) {
+          console.error(err);
+          alert("削除失敗");
+        }
+      };
+
+      return (
+        <div>
+          <h2>社員削除</h2>
+
+          <input
+            placeholder="ID"
+            value={id}
+            onChange={(e) => setId(e.target.value)}
+          />
+
+          <button onClick={handleDelete}>削除</button>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+
+</script>
+</body>
+</html>

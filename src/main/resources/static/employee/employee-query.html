@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>社員検索</title>
+
+    <!-- React CDN -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+
+    <!-- axios -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+
+    function App() {
+
+      // 🔹 検索条件を管理するstate
+      // （入力フォームの値を保存する）
+      const [search, setSearch] = React.useState({
+        id: "",
+        name: "",
+        age: "",
+        department: "",
+        email: ""
+      });
+
+      // 🔹 検索結果（社員一覧）を管理するstate
+      const [employees, setEmployees] = React.useState([]);
+
+      // 🔹 入力変更時の処理
+      // 各inputの値をsearch stateに反映する
+      const handleChange = (e) => {
+        setSearch({
+          ...search, // 既存の値を維持
+          [e.target.name]: e.target.value // 対応する項目だけ更新
+        });
+      };
+
+      // 🔹 検索ボタン押下時の処理
+      // Spring BootのAPIを呼び出す
+      const handleSearch = async () => {
+        try {
+          const params = Object.fromEntries(
+                Object.entries(search)
+                .map(([k, v]) => [k, typeof v === "string" ? v.trim() : v]) // 去空白
+                .filter(([_, v]) => v !== "" && v != null)
+          );
+          const res= await axios.get("/employees/search", {
+            params: params // クエリパラメータとして送信
+          });
+
+          // 🔹 取得したデータをstateにセット
+          setEmployees(res.data);
+
+        } catch (err) {
+          console.error(err);
+        }
+      };
+
+      return (
+        <div>
+          <h2>社員検索</h2>
+
+          {/* 🔹 検索入力エリア */}
+          <div>
+            <input name="id" placeholder="ID" onChange={handleChange} />
+            <input name="name" placeholder="Name" onChange={handleChange} />
+            <input name="age" placeholder="Age" onChange={handleChange} />
+             <input name="department" placeholder="Department" onChange={handleChange} />
+            <input name="email" placeholder="Email" onChange={handleChange} />
+
+            {/* 🔹 検索実行ボタン */}
+            <button onClick={handleSearch}>検索</button>
+          </div>
+
+          <br/>
+
+          {/* 🔹 検索結果表示テーブル */}
+          <table border="1">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Age</th>
+                <th>Email</th>
+                <th>Department</th>
+              </tr>
+            </thead>
+            <tbody>
+              {/* 🔹 employees配列をループして表示 */}
+              {employees.map(emp => (
+                <tr key={emp.id}>
+                  {/* 🔹 各フィールドを表示 */}
+                  <td>{emp.id}</td>
+                  <td>{emp.name}</td>
+                  <td>{emp.age}</td>
+                  <td>{emp.email}</td>
+                  <td>{emp.department}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      );
+    }
+
+    // 🔹 Reactアプリをrootに描画
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+
+</script>
+</body>
+</html>
