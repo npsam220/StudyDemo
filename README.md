@@ -24,3 +24,13 @@ Spring BootとReactを使用して、社員管理システム（CRUD機能）を
 - 検索条件を複数指定できるように設計
 - フロントエンドとバックエンドの連携を意識した構成
 - 可読性を意識したコード設計
+---
+
+## 🚀 起動方法
+
+1. MySQLを起動
+2. application.propertiesでデータベース接続を設定
+3. Spring Bootアプリケーションを起動
+4. ブラウザで以下にアクセス
+
+http://localhost:8080/employee/employee-management.html
