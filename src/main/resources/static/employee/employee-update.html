@@ -43,7 +43,8 @@
           setEmployee(res.data);
         } catch (err) {
           console.error(err);
-          alert("データが見つかりません");
+          //alert("データが見つかりません");
+          alert(err.response.data.message );
         }
       };
 

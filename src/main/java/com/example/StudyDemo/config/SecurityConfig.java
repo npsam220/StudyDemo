@@ -11,12 +11,13 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 public class SecurityConfig {
-
+/* */
     /**
      * 🔐 セキュリティの基本設定
      * ・どのリクエストが認証（ログイン）を必要とするかを定義
      * ・フォームログイン機能を有効化
      */
+/* 
   @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
@@ -40,12 +41,12 @@ public class SecurityConfig {
 
         return http.build();
     }
-
+*/
 /**
      * ===== 🔴 httpBasic版（現在使用） =====
      * ・API認證用
      */ 
-/* 
+
 @Bean
 public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
@@ -61,7 +62,7 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
     return http.build();
 }
-*/
+
     /**
      * 🔑 認証マネージャー（AuthenticationManager）の設定
      *
