@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>商品編集</title>
+
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+  function App() {
+    // 編集対象の商品データをsessionStorageから取得
+    const savedProduct = sessionStorage.getItem("editProduct");
+    // JSON文字列をオブジェクトに変換して初期値とする
+    const initialProduct = savedProduct ? JSON.parse(savedProduct) : null;
+    // 編集対象の商品データを管理するstate
+    const [product, setProduct] = React.useState(initialProduct);
+
+    if (product === null) {
+      return (
+        <div>
+          <h1>商品編集</h1>
+          <p>編集対象の商品データがありません。</p>
+          <button onClick={() => location.href = "/product/product-management.html"}>
+            一覧へ戻る
+          </button>
+        </div>
+      );
+    }
+
+    const handleUpdate = async () => {
+      try {
+        await axios.put(`/products/${product.id}`, product);
+        alert("更新成功！");
+      } catch (err) {
+        console.error(err);
+        alert("更新失敗");
+      }
+    };
+
+    return (
+      <div>
+        <h1>商品編集</h1>
+
+        <div>
+          <p>ID：<input name="id" value={product.id} readOnly /></p>
+          <p>商品コード：
+            <input
+              name="productCode"
+              value={product.productCode}
+              onChange={(e) => setProduct({ ...product, productCode: e.target.value })}
+            />
+          </p>
+          <p>名前：
+            <input
+              name="name"
+              value={product.name}
+              onChange={(e) => setProduct({ ...product, name: e.target.value })}
+            />
+          </p>
+
+          <p>価格：
+            <input
+              name="price"
+              type="text"
+              value={product.price}
+              onChange={(e) => setProduct({ ...product, price: e.target.value })}
+            />
+          </p>
+
+          <p>在庫数：
+            <input
+              name="stock"
+              type="text"
+              value={product.stock}
+              onChange={(e) => setProduct({ ...product, stock: e.target.value })}
+            />
+          </p>
+        </div>
+
+        <button onClick={handleUpdate}>更新</button>
+        <button onClick={() => location.href = "/product/product-management.html"}>
+          一覧へ戻る
+        </button>
+      </div>
+    );
+  }
+
+  ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+</script>
+
+</body>
+
+</html>

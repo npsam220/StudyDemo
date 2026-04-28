@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>在庫検索</title>
+
+    <!-- React CDN -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+
+    <!-- axios -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+
+<body>
+ <div id="root"></div>
+ <script type="text/babel">
+    function App() {
+
+      // 🔹 検索条件を管理するstate
+      // （入力フォームの値を保存する）
+      const [search, setSearch] = React.useState({
+        productCode: "",
+        id: "",
+        name: "",
+        pricebegin: "",
+        priceend: ""
+      });
+
+      // 🔹 検索結果（商品一覧）を管理するstate
+      const [products, setProducts] = React.useState([]);
+      // 🔹 ページネーション用のstate（常に使用）
+      const [currentPage, setCurrentPage] = React.useState(1);
+      const [pageSize, setPageSize] = React.useState(10);
+
+      // 🔹 入力変更時の処理
+      // 各inputの値をsearch stateに反映する
+      const handleChange = (e) => {
+        setSearch({
+          ...search, // 既存の値を維持
+          [e.target.name]: e.target.value // 対応する項目だけ更新
+        });
+      };
+
+      // 🔹 検索ボタン押下時の処理
+      // Spring BootのAPIを呼び出す
+      const handleSearch = async () => {
+        try {
+          const params = Object.fromEntries(
+                Object.entries(search)
+                .map(([k, v]) => [k, typeof v === "string" ? v.trim() : v]) // 去空白
+                .filter(([_, v]) => v !== "" && v != null)
+          );
+          const res= await axios.get("/products/search", {
+            params: params // クエリパラメータとして送信
+          });
+
+          // 🔹 取得したデータをstateにセット
+          setProducts(res.data);
+          setCurrentPage(1);
+        } catch (err) {
+          console.error(err);
+          alert("検索に失敗しました");
+        }
+      };   
+      
+    const totalCount = products.length;
+     const totalPages = Math.max(1, Math.ceil(totalCount / pageSize));
+     const startIndex = (currentPage - 1) * pageSize;
+     const currentProducts = products.slice(startIndex, startIndex + pageSize);
+      // ページサイズ変更時の処理
+     function handlePageSizeChange(e) {
+        // ページサイズを更新 ＆ページ番号をリセット
+        setPageSize(Number(e.target.value));
+        setCurrentPage(1);
+      }
+      function goFirstPage() {
+        setCurrentPage(1);
+      }
+
+      function goPrevPage() {
+         setCurrentPage(prev => Math.max(1, prev - 1));
+      }
+
+       function goNextPage() {
+        setCurrentPage(prev => Math.min(totalPages, prev + 1));
+      }
+
+       function goLastPage() {
+         setCurrentPage(totalPages);
+       }
+    return (
+      <div>
+        <h1>在庫検索</h1>
+
+        <div>
+          <p>商品コード：<input name="productCode" value={search.productCode} onChange={handleChange} /></p>
+          <p>ID：<input name="id" value={search.id} onChange={handleChange} /></p>
+          <p>名前：<input name="name" value={search.name} onChange={handleChange} /></p>
+          <p>価格（開始）：<input name="pricebegin" value={search.pricebegin} onChange={handleChange} /></p>
+          <p>価格（終了）：<input name="priceend" value={search.priceend} onChange={handleChange} /></p>
+          <button onClick={handleSearch}>検索</button>
+        </div>
+
+        <h2>検索結果</h2>
+
+              <div>
+                  <span>総件数：{totalCount}</span>
+                  <span>　総ページ数：{totalPages}</span>
+                  <span>　現在のページ：{currentPage}</span>
+                  <span>　1ページあたりの件数：</span>
+                  <select value={pageSize} onChange={handlePageSizeChange}>
+                      <option value="10">10件</option>
+                      <option value="20">20件</option>
+                  </select>
+              </div>
+              <div>
+                  <button onClick={goFirstPage} disabled={currentPage === 1}>最初</button>
+                  <button onClick={goPrevPage} disabled={currentPage === 1}>前へ</button>
+                  <button onClick={goNextPage} disabled={currentPage === totalPages}>次へ</button>
+                  <button onClick={goLastPage} disabled={currentPage === totalPages}>最後</button>
+              </div>
+        <table border="1">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>商品コード</th>
+              <th>名前</th>
+              <th>価格</th>
+              <th>在庫数</th>
+            </tr>
+          </thead>
+          <tbody>
+  {products.length === 0 ? (
+    <tr>
+      <td colSpan="5">該当データがありません</td>
+    </tr>
+  ) : (
+    currentProducts.map(product => (
+      <tr key={product.id}>
+        <td>{product.id}</td>
+        <td>{product.productCode}</td>
+        <td>{product.name}</td>
+        <td>{product.price}</td>
+        <td>{product.stock}</td>
+      </tr>
+    ))
+  )}
+</tbody>
+        </table>
+
+      </div>
+    );
+  }
+  
+    ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+    </script>
+ <body>

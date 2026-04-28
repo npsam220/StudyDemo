@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>在庫管理</title>
+
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    function App() {
+      // 🔹 検索条件を管理するstate
+      const [search, setSearch] = React.useState({
+        productCode: "",
+        id: "",
+        name: "",
+        pricebegin: "",
+        priceend: ""
+      });
+      // 🔹 検索結果を管理するstate
+      const [products, setProducts] = React.useState([]);
+      function handleChange(e) {
+        const { name, value } = e.target;
+        setSearch(prevSearch => ({
+          ...prevSearch,
+          [name]: value
+        }));
+      }
+      // ページネーション用のstate（オプション）
+      const [currentPage, setCurrentPage] = React.useState(1);
+      // 1ページあたりの表示件数（オプション）
+      const [pageSize, setPageSize] = React.useState(10);
+    
+      const handleSearch = async () => {
+        const params = Object.fromEntries(
+          Object.entries(search)
+            .map(([k, v]) => [k, typeof v === "string" ? v.trim() : v])
+            .filter(([_, v]) => v !== "" && v != null)
+        );
+        try{
+          const res = await axios.get("/products/search", {
+            params: params
+          });
+  
+          console.log(res.data);
+          setProducts(res.data);
+          setCurrentPage(1);
+          //alert("検索結果: " + JSON.stringify(res.data));
+        }catch(error){
+          console.error("検索エラー:", error);
+          alert("検索に失敗しました。");
+        
+        };
+      };
+    function handleEdit(product) {
+      // 編集対象の商品データをsessionStorageに保存してから編集ページへ遷移
+       sessionStorage.setItem("editProduct", JSON.stringify(product));
+       location.href = "/product/product-update.html";
+   }
+
+    function handleDelete(product) {
+      if (window.confirm("本当に削除しますか？")) {
+        axios.delete(`/products/${product.id}`)
+          .then(() => {
+            // 削除成功時の処理
+            alert("商品を削除しました。");
+            handleSearch(); // 検索結果を再取得
+          })
+          .catch(error => {
+            console.error("削除エラー:", error);
+            alert("削除に失敗しました。");
+          });
+      }
+    }
+
+     const totalCount = products.length;
+     const totalPages = Math.max(1, Math.ceil(totalCount / pageSize));
+     const startIndex = (currentPage - 1) * pageSize;
+     const currentProducts = products.slice(startIndex, startIndex + pageSize);
+      // ページサイズ変更時の処理
+     function handlePageSizeChange(e) {
+        // ページサイズを更新 ＆ページ番号をリセット
+        setPageSize(Number(e.target.value));
+        setCurrentPage(1);
+      }
+      function goFirstPage() {
+        setCurrentPage(1);
+      }
+
+      function goPrevPage() {
+         setCurrentPage(prev => Math.max(1, prev - 1));
+      }
+
+       function goNextPage() {
+        setCurrentPage(prev => Math.min(totalPages, prev + 1));
+      }
+
+       function goLastPage() {
+         setCurrentPage(totalPages);
+       }
+      return (
+        
+        <div>
+          <h1>在庫管理</h1>
+          <p>ここに在庫管理のUIを実装します。</p>
+
+          <div>
+            <h2>商品登録機能</h2>
+            <button onClick={() => location.href = "/product/product-create.html"}>
+              新規登録
+            </button>
+          
+            <h2>商品検索</h2>
+            <input type="text" name="id" placeholder="ID" value={search.id} onChange={handleChange} />
+            <input type="text" name="productCode" placeholder="商品コード" value={search.productCode} onChange={handleChange} />
+            <input type="text" name="name" placeholder="名前" value={search.name} onChange={handleChange} />
+            <input type="text" name="pricebegin" placeholder="価格範囲（開始）" value={search.pricebegin} onChange={handleChange} />
+            <input type="text" name="priceend" placeholder="価格範囲（終了）" value={search.priceend} onChange={handleChange} />
+
+            <button onClick={handleSearch}>検索</button>
+            <div>
+              <h3>検索結果</h3>
+              <div>
+                  <span>総件数：{totalCount}</span>
+                  <span>　総ページ数：{totalPages}</span>
+                  <span>　現在のページ：{currentPage}</span>
+                  <span>　1ページあたりの件数：</span>
+                  <select value={pageSize} onChange={handlePageSizeChange}>
+                      <option value="10">10件</option>
+                      <option value="20">20件</option>
+                  </select>
+              </div>
+              <div>
+                  <button onClick={goFirstPage} disabled={currentPage === 1}>最初</button>
+                  <button onClick={goPrevPage} disabled={currentPage === 1}>前へ</button>
+                  <button onClick={goNextPage} disabled={currentPage === totalPages}>次へ</button>
+                  <button onClick={goLastPage} disabled={currentPage === totalPages}>最後</button>
+              </div>
+              <table border="1">
+                <thead>
+                  <tr>
+                    <th>機能</th>
+                    <th>ID</th>
+                    <th>商品コード</th>
+                    <th>名前</th>
+                    <th>価格</th>
+                    <th>在庫数</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {products.length === 0 ? (
+                  <tr>
+                     <td colSpan="6">該当データがありません</td>
+                  </tr>
+                  ) : (
+                      currentProducts.map(product => (
+                         <tr key={product.id}>
+                            <td> 
+                              <button onClick={() => handleEdit(product)}>編集</button>
+                              <button onClick={() => handleDelete(product)}>削除</button>
+                            </td>
+
+
+                            <td>{product.id}</td>
+                            <td>{product.productCode}</td>
+                            <td>{product.name}</td>
+                            <td>{product.price}</td>
+                            <td>{product.stock}</td>
+                         </tr>
+                   ))
+                  )}
+                </tbody>
+              </table>
+              
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+  </script>
+</body>
+
+</html>

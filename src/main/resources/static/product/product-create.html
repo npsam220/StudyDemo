@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>商品登録</title>
+
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    function App() {
+      const [product, setProduct] = React.useState({
+        productCode: "",
+        name: "",
+        price: "",
+        stock: ""
+      });
+
+      const handleChange = (e) => {
+        const { name, value } = e.target;
+        setProduct(prev => ({
+          ...prev,
+          [name]: value
+        }));
+      };
+
+      const handleCreate = async () => {
+        try {
+          await axios.post("/products/create", product);
+          alert("登録成功！");
+          //location.href = "/product/product-management.html";
+        } catch (err) {
+          console.error(err);
+          alert("登録失敗");
+        }
+      };
+
+      return (
+        <div>
+          <h1>商品登録</h1>
+
+          <div>
+            <p>商品コード：<input name="productCode" value={product.productCode} onChange={handleChange} /></p>
+            <p>名前：<input name="name" value={product.name} onChange={handleChange} /></p>
+            <p>価格：<input name="price" value={product.price} onChange={handleChange} /></p>
+            <p>在庫数：<input name="stock" value={product.stock} onChange={handleChange} /></p>
+            <button onClick={handleCreate}>登録</button>
+            <button onClick={() => location.href = "/product/product-management.html"}>一覧へ戻る</button>
+          </div>
+        </div>
+      );
+    }
+
+    ReactDOM.render(<App />, document.getElementById("root"));
+  </script>
+</body>
+</html> 

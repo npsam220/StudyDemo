@@ -10,16 +10,16 @@ import java.util.List;
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
     // 🔥 Native SQL（今天重點）
-    @Query(value = "SELECT * FROM employee WHERE name LIKE %:name%", nativeQuery = true)
+    @Query(value = "SELECT * FROM employee WHERE name LIKE CONCAT('%', :name, '%')", nativeQuery = true)
     List<Employee> searchByNameNative(@Param("name") String name);
     // 🔥 Native SQL（今天重點）
     @Query(value = """
     SELECT * FROM employee
     WHERE (:id IS NULL OR id = :id)
-      AND (:name IS NULL OR name LIKE %:name%)
+      AND (:name IS NULL OR name LIKE CONCAT('%', :name, '%'))
       AND (:age IS NULL OR age = :age)
       AND (:department IS NULL OR department = :department)
-      AND (:email IS NULL OR email LIKE %:email%)
+      AND (:email IS NULL OR email LIKE CONCAT('%', :email, '%'))
     """, nativeQuery = true)
     List<Employee> search(
             @Param("id") Long id,
