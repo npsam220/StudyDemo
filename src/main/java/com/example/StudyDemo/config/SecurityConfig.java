@@ -24,22 +24,32 @@ public class SecurityConfig {
 
             .authorizeHttpRequests(auth -> auth
 
-                // 🔓 公開ページ
-                .requestMatchers("/", "/index.html").permitAll()
-                .requestMatchers("/product/product-query.html").permitAll()
+             // 🔓 Swagger（最上面）
+            .requestMatchers(
+               "/swagger-ui.html",
+                "/swagger-ui/**",
+               "/v3/api-docs/**"
+            ).permitAll()
 
-                // 🔓 API（検索）
-                .requestMatchers(HttpMethod.GET, "/products/search").permitAll()
+            // 🔓 公開頁面
+           .requestMatchers("/", "/index.html").permitAll()
+           .requestMatchers("/product/product-query.html").permitAll()
 
-                // 🔒 管理画面（ADMIN）
-                .requestMatchers("/product/product-management.html").hasRole("ADMIN")
+            // 🔓 公開 API
+           .requestMatchers(HttpMethod.GET, "/products/search").permitAll()
 
-                // 🔒 CRUD API（ADMIN）
-                .requestMatchers(HttpMethod.POST, "/products/**").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.PUT, "/products/**").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.DELETE, "/products/**").hasRole("ADMIN")
+            // 🔒 管理畫面（ADMIN）
+            .requestMatchers("/product/product-management.html").hasRole("ADMIN")
 
-                .anyRequest().authenticated()
+            // 🔒 CRUD API（ADMIN）
+            .requestMatchers(HttpMethod.POST, "/products/**").hasRole("ADMIN")
+            .requestMatchers(HttpMethod.PUT, "/products/**").hasRole("ADMIN")
+            .requestMatchers(HttpMethod.DELETE, "/products/**").hasRole("ADMIN")
+
+            // 🔒 其他全部需要登入
+             .anyRequest().authenticated()
+
+            
             )
 
             // 🔐 フォームログイン（現在使用）

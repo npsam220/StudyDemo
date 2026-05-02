@@ -1,0 +1,84 @@
+/* 🔹 按鈕基本樣式 */
+.btn {
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  background-color: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* 🔥 hover 效果 */
+.btn:hover {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+
+/* 🔸 disabled */
+.btn:disabled {
+  background-color: #eee;
+  color: #999;
+  cursor: not-allowed;
+}
+
+/* 🔹 分頁區 */
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+/* 🔹 table */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th {
+  background-color: #f5f5f5;
+  padding: 10px;
+}
+
+.table td {
+  padding: 10px;
+  text-align: center;
+}
+
+/* 🔥 table hover */
+.table tr:hover {
+  background-color: #f0f8ff;
+}
+
+/* 🔥 外層容器（控制高度 + 滾動） */
+.table-container {
+  max-height: 300px;   /* 可調整 */
+  overflow-y: auto;
+  border: 1px solid #ccc;
+}
+
+/* 🔥 表頭固定 */
+.table thead th {
+  position: sticky;
+  top: 0;
+  background-color: #f5f5f5;
+  z-index: 1;
+}
+
+/* 表格基本樣式 */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th,
+.table td {
+  padding: 10px;
+  text-align: center;
+  border: 1px solid #ddd;
+}
+
+/* hover */
+.table tr:hover {
+  background-color: #f0f8ff;
+}

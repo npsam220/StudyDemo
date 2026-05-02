@@ -3,16 +3,26 @@ package com.example.StudyDemo.controller;
 import com.example.StudyDemo.entity.Product;
 import com.example.StudyDemo.exception.ProductNotFoundException;
 import com.example.StudyDemo.service.ProductService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+
+
+
 
 
 @RestController
 @RequestMapping("/products")
+@Tag(name = "在庫管理")  
 public class ProductController {
     ProductService service;
     private static final Logger log = LoggerFactory.getLogger(ProductController.class);
@@ -20,12 +30,30 @@ public class ProductController {
         this.service = service;
     }
       // 搜尋
+    @Operation (summary = "商品を検索")
     @GetMapping("/search")
+    @ApiResponses({
+    @ApiResponse(
+        responseCode = "200",
+        description = "検索成功",
+        content = @Content(
+            mediaType = "application/json",
+            schema = @Schema(implementation = Product.class)
+        )
+    ),
+    @ApiResponse(responseCode = "400", description = "パラメータ不正"),
+    @ApiResponse(responseCode = "500", description = "システムエラー")
+   })
     public List<Product> search(
+        @Parameter(description = "商品ID")
         @RequestParam(required = false) Long id,
+        @Parameter(description = "商品コード")
         @RequestParam(required = false) String productCode,
+        @Parameter(description = "商品名")
         @RequestParam(required = false) String name,
+        @Parameter(description = "価格範囲（開始）")
         @RequestParam(required = false) Integer pricebegin,
+        @Parameter(description = "価格範囲（終了）")
         @RequestParam(required = false) Integer priceend
        ) {
         log.info("product search - id: {}, productCode: {}, name: {}, pricebegin: {}, priceend: {}", id, productCode, name, pricebegin, priceend);
@@ -44,6 +72,7 @@ public class ProductController {
     }
      // 更新
     @PutMapping("/{id}")
+    @Operation(summary = "商品を更新")
     public Product update(@PathVariable Long id, @RequestBody Product product) {
          Product existing = service.findById(id);
          log.info("product search - id: {}", id);
@@ -59,6 +88,7 @@ public class ProductController {
         return service.save(existing);
     }
     @DeleteMapping("/{id}")
+    @Operation(summary = "商品を削除")
     public void delete(@PathVariable Long id) {
         Product existing = service.findById(id);
         if (existing == null) {
@@ -67,6 +97,7 @@ public class ProductController {
         service.deleteById(id);
     }
     @PostMapping("/create")
+    @Operation(summary = "商品を作成")
     public Product create(@RequestBody Product product) {
         return service.save(product);
     }
