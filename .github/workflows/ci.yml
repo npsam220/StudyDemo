@@ -1,0 +1,23 @@
+name: Java CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: ① ソースコードを取得
+        uses: actions/checkout@v3
+
+      - name: Java CI test
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: ③ Maven によるビルドおよびテスト実行
+        run: mvn clean test
