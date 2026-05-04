@@ -1,13 +1,15 @@
-package com.example.StudyDemo.service;
+package com.example.StudyDemo.springBootTest;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.example.StudyDemo.entity.Employee;
+import com.example.StudyDemo.service.EmployeeService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+
 
 
 @SpringBootTest
@@ -23,8 +25,12 @@ public class EmployeeServiceTest {
      }
      @Test
      void testFindById() {
-        Employee emp = service.findById(1L);
+        Employee emp = new Employee();
+         emp.setName("Sam");
 
-        assertNotNull(emp);
+         Employee saved = service.save(emp);
+         Employee result = service.findById(saved.getId());
+
+         assertNotNull(result);
      }
 }

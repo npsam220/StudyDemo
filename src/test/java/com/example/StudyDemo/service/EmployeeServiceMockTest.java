@@ -29,13 +29,14 @@ class EmployeeServiceMockTest {
     void testFindById_success() {
         Employee emp = new Employee();
         emp.setName("Sam");
-
+        // 模擬 repository.findById(1L) 回傳 emp
         when(repository.findById(1L))
                 .thenReturn(Optional.of(emp));
 
         Employee result = service.findById(1L);
-
+        // 驗證結果
         assertNotNull(result);
+        // 驗證員工名稱
         assertEquals("Sam", result.getName(), "員工名稱應該是 Sam");
         //repository.findById(1L) が呼び出されたことを確認する
          verify(repository).findById(1L);

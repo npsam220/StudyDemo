@@ -2,10 +2,10 @@ package com.example.StudyDemo.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import org.antlr.v4.runtime.misc.NotNull;
+
 
 @Entity
-@Table(name = "user")
+@Table(name = "user_info")
 public class User {
 
     @Id
@@ -31,7 +31,7 @@ public class User {
     }
 
 
-    // getter / setter
+    
 
     public Long getId() {
         return id;
