@@ -10,15 +10,15 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
-
-
-
-
-
 
 @RestController
 @RequestMapping("/products")
@@ -102,5 +102,55 @@ public class ProductController {
         return service.save(product);
     }
     
+    @GetMapping("/csv")
+    public void exportProductCsv(
+        HttpServletResponse response,
+        @Parameter(description = "商品ID")
+        @RequestParam(required = false) Long id,
+        @Parameter(description = "商品コード")
+        @RequestParam(required = false) String productCode,
+        @Parameter(description = "商品名")
+        @RequestParam(required = false) String name,
+        @Parameter(description = "価格範囲（開始）")
+        @RequestParam(required = false) Integer pricebegin,
+        @Parameter(description = "価格範囲（終了）")
+        @RequestParam(required = false) Integer priceend
+    ) throws IOException {
+       
+        response.setContentType("text/csv; charset=UTF-8");
+        String filename = "products_" + LocalDateTime.now()
+                .format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss")) + ".csv";
 
+        response.setHeader("Content-Disposition", "attachment; filename=" + filename);
+        
+         List<Product> list = service.search(id, productCode, name, pricebegin, priceend);
+        // System.out.println("list.size(): " + list.size());
+         log.info("exportProductCsv - id: {}, productCode: {}, name: {}, pricebegin: {}, priceend: {}, result count: {}", id, productCode, name, pricebegin, priceend, list.size());
+         PrintWriter writer = response.getWriter();
+
+         // ⭐ 日本公司會用日文欄位
+         writer.write("\uFEFF"); // 防亂碼（Excel用）
+         writer.println("ID,商品コード,商品名,価格,在庫数");
+
+        for (Product p : list) {
+        writer.println(
+           csv(p.getId()) + "," +
+           csv(p.getProductCode()) + "," +
+           csv(p.getName()) + "," +
+           csv(p.getPrice()) + "," +
+           csv(p.getStock())
+        );
+    }
+
+        writer.flush();
+   }
+ 
+
+   // 🔥 防逗號、換行
+   private String csv(Object value) {
+      if (value == null) return "";
+
+      String str = value.toString();
+      return "\"" + str.replace("\"", "\"\"") + "\"";
+   }
 }

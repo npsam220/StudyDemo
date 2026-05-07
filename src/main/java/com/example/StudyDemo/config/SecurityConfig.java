@@ -30,7 +30,7 @@ public class SecurityConfig {
                 "/swagger-ui/**",
                "/v3/api-docs/**"
             ).permitAll()
-
+           .requestMatchers("/favicon.ico").permitAll()
             // 🔓 公開頁面
            .requestMatchers("/", "/index.html").permitAll()
            .requestMatchers("/product/product-query.html").permitAll()

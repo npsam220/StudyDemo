@@ -1,12 +1,12 @@
 package com.example.StudyDemo.service;
 
-import java.util.List;
-
-import org.springframework.stereotype.Service;
-
 import com.example.StudyDemo.entity.Product;
 import com.example.StudyDemo.exception.ProductNotFoundException;
 import com.example.StudyDemo.repository.ProductRepository;
+import java.util.List;
+import org.springframework.stereotype.Service;
+
+
 
 @Service
 public class ProductService {
@@ -41,5 +41,8 @@ public class ProductService {
          throw new ProductNotFoundException("商品が存在しません");
       }
       repository.deleteById(id);
-   }            
+   }  
+   public List<Product> findAll() {
+      return repository.findAll();
+   }          
 }

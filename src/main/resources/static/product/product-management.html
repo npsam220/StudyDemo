@@ -17,28 +17,34 @@
   <div id="root"></div>
 
   <script type="text/babel">
-    fetch("../header.html")
-  .then(res => res.text())
-  .then(html => {
-    document.getElementById("header").innerHTML = html;
 
-    // 🔥 手動執行登入資訊
-    fetch("/api/me", { credentials: "include" })
-      .then(res => res.json())
-      .then(data => {
-        const role = data.roles[0].authority.replace("ROLE_", "");
-        document.getElementById("user-info").innerHTML =
-          `ログイン中：${data.username}（${role}）
+
+
+    fetch("../header.html")
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById("header").innerHTML = html;
+
+        // 🔥 手動執行登入資訊
+        fetch("/api/me", { credentials: "include" })
+          .then(res => res.json())
+          .then(data => {
+            const role = data.roles[0].authority.replace("ROLE_", "");
+            document.getElementById("user-info").innerHTML =
+              `ログイン中：${data.username}（${role}）
            <form action="/logout" method="post" style="display:inline;">
              <button style="margin-left:10px;">ログアウト</button>
            </form>`;
-      })
-      .catch(() => {
-        document.getElementById("user-info").innerText = "未ログイン";
-      });
+          })
+          .catch(() => {
+            document.getElementById("user-info").innerText = "未ログイン";
+          });
 
-  });
+      });
     function App() {
+      function downloadSampleCsv() {
+        window.location.href = "/resources/sample_csv.csv";
+      }
       // 🔹 検索条件を管理するstate
       const [search, setSearch] = React.useState({
         productCode: "",
@@ -128,10 +134,59 @@
       function goLastPage() {
         setCurrentPage(totalPages);
       }
+
+      function downloadCsv() {
+        //alert("CSV出力処理を実行します。");
+        const params = new URLSearchParams(
+          Object.fromEntries(
+            Object.entries(search)
+              .map(([k, v]) => [k, typeof v === "string" ? v.trim() : v])
+              .filter(([_, v]) => v !== "" && v != null)
+          )
+        );
+        // CSVダウンロード用のURLにクエリパラメータを付与して遷移
+
+        window.location.href = "/products/csv?" + params.toString();
+
+      }
+      async function uploadCsv() {
+
+        const fileInput = document.getElementById("csvFile");
+
+        if (fileInput.files.length === 0) {
+          alert("CSVファイルを選択してください");
+          return;
+        }
+
+        const formData = new FormData();
+
+        formData.append("file", fileInput.files[0]);
+
+        try {
+
+          const response = await axios.post(
+            "/batch/upload",
+            formData,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data"
+              }
+            }
+          );
+
+          alert(response.data);
+
+        } catch (error) {
+
+          console.error(error);
+
+          alert("CSVアップロード失敗");
+        }
+      }
       return (
-    
+
         <div style={{ width: "80%", margin: "0 auto" }}>
-         
+
           <h1>在庫管理</h1>
           <p>ここに在庫管理のUIを実装します。</p>
 
@@ -140,7 +195,14 @@
           <button onClick={() => location.href = "/product/product-create.html"}>
             新規登録
           </button>
+          {/* CSVアップロード */}
+          <h2>CSVアップロード</h2>
 
+          <input type="file" id="csvFile" />
+
+          <button onClick={uploadCsv}>
+            CSVアップロード
+          </button>
           <h2>商品検索</h2>
           <input type="text" name="id" placeholder="ID" value={search.id} onChange={handleChange} />
           <input type="text" name="productCode" placeholder="商品コード" value={search.productCode} onChange={handleChange} />
@@ -149,7 +211,10 @@
           <input type="text" name="priceend" placeholder="価格範囲（終了）" value={search.priceend} onChange={handleChange} />
 
           <button onClick={handleSearch}>検索</button>
-
+          <button onClick={downloadCsv}>CSV出力</button>
+          <button onClick={downloadSampleCsv}>
+            一括登録用CSVサンプルダウンロード
+          </button>
           <h3>検索結果</h3>
           <div style={{
             display: "flex",
