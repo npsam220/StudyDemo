@@ -1,80 +1,111 @@
-# 社員管理システム（StudyDemo）
+# 📦 StudyDemo（在庫・社員管理システム）
 
-## 📌 概要
-Spring BootとReactを使用し、社員情報を管理するWebアプリケーションを開発しました。  
-社員の登録・検索・更新・削除（CRUD）機能に加え、Spring Securityによる認証機能を実装しています。  
+## 📖 概要
+本プロジェクトは、Spring Boot と React を用いて開発した業務系Webアプリケーションです。  
+社員管理および商品管理の機能に加え、CSVファイルによる一括登録（バッチ処理）を実装しています。
 
-また、Docker Composeを利用することで、アプリケーションとデータベースを一括で起動できるようにしています。
+また、Spring Security による認証機能や、Docker Compose を利用した環境構築にも対応しています。
 
 ---
 
-## 🔧 主な機能
-- 社員登録（Create）
-- 社員一覧表示（Read）
-- 社員情報更新（Update）
-- 社員削除（Delete）
+## 🛠 使用技術
+
+### Backend
+- Java 17
+- Spring Boot
+- Spring Data JPA（Hibernate）
+- Spring Security
+- Spring Batch
+
+### Frontend
+- React（CDN）
+- Axios
+
+### Database
+- MySQL
+
+### その他
+- Docker / Docker Compose
+- Git / GitHub
+
+---
+
+## 🚀 主な機能
+
+### 🔹 社員管理機能
+- 社員の登録・一覧表示・更新・削除（CRUD）
 - 条件検索（ID / 名前 / 年齢 / Email）
-- ログイン認証機能（Spring Security）
 
----
+### 🔹 商品管理機能
+- 商品の登録・一覧・更新・削除
+- 検索機能
 
-## 🏗 システム構成
-- フロントエンドとバックエンドを分離した構成
-- バックエンド：Spring Boot（REST API）
-- フロントエンド：React（CDN + Axios）
-- データベース：MySQL
-- コンテナ：Docker / Docker Compose
+### 🔹 バッチ処理（CSVインポート）
+- CSVファイルアップロードによる一括登録
+- Spring Batch を利用したトランザクション制御
+- 大量データ処理に対応
 
----
-
-## 🔐 認証機能（Spring Security）
-Spring Securityを用いてログイン認証機能を実装しました。
-
-- UserDetailsServiceによる認証処理
-- フォームログイン対応
-- 認証が必要なAPI（登録・更新・削除）を制御
+### 🔹 認証機能（Spring Security）
+- ログイン認証（フォームログイン）
+- 認証が必要なAPIの制御
 - 未認証ユーザーのアクセス制限
 
 ---
 
-## 💡 工夫した点
-- 検索条件を複数指定できる動的クエリを実装
-- フロントエンドとバックエンドの責務を分離
-- RESTfulなAPI設計
-- 可読性・保守性を意識したコード構成
-- 初期データを自動投入（DataLoader）
+## 🏗 システム構成
+Frontend（React）
+↓
+Controller
+↓
+Service
+↓
+Repository（JPA）
+↓
+MySQL
+
+---
+
+## 💡 技術的な工夫
+
+- Spring Batch によるCSV一括処理を実装
+- トランザクション管理でデータ整合性を保証
+- 動的検索（複数条件）に対応
+- RESTful API設計
+- フロントエンドとバックエンドを分離
+- Docker Compose による環境統一
 
 ---
 
 ## 🚀 起動方法（Docker推奨）
 
 ```bash
-# 1. プロジェクトをビルド
+# ビルド
 ./mvnw clean package
 
-# 2. Dockerで起動
+# 起動
 docker compose up -d --build
-
-アクセスURL
+🌐 アクセスURL
+Docker環境
 アプリ画面
 👉 http://localhost:8081/employee/employee-query.html
-Swagger（API確認）
+
+👉 http://localhost:8081/product/product-management.html
+Swagger
 👉 http://localhost:8081/swagger-ui/index.html
-🧪 デモ用アカウント
 username: admin
 password: 1234
-🛠 ローカル起動方法（Dockerなし）
+🛠 ローカル起動（Dockerなし）
 MySQLを起動
-application.propertiesでDB接続設定
-Spring Bootアプリを起動
-http://localhost:8080/employee/employee-query.html
+application.properties を設定
+アプリを起動
 
-📚 使用技術
-Java / Spring Boot
-Spring Security
-JPA（Hibernate）
-MySQL
-React（CDN）
-Axios
-Docker / Docker Compose
-Git / GitHub
+👉 http://localhost:8080/employee/employee-query.html
+
+📈 今後の改善予定
+AWS環境へのデプロイ
+APIドキュメントの強化（Swagger整理）
+フロントエンドのSPA化
+ログ管理・監視機能の追加
+👤 作者
+
+Sam（Java Backend Engineer）
