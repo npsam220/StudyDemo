@@ -34,3 +34,8 @@ build/
 *.log
 *.gz
 .DS_Store
+upload_files/
+download_files/
+
+# except sample
+!src/main/resources/static/resources/sample_csv.csv
