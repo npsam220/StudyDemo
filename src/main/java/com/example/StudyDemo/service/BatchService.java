@@ -98,6 +98,13 @@ public class BatchService {
         }
     }
 
+    /**
+     * DBの状態に基づくバリデーション
+     * 
+     * @param action
+     * @param productCode
+     * @return
+     */
     public String validateDbRule(String action, String productCode) {
 
         boolean exists = productRepository.findByProductCode(productCode).isPresent();

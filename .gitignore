@@ -37,5 +37,7 @@ build/
 upload_files/
 download_files/
 
+### CSV ###
+*.csv
 # except sample
 !src/main/resources/static/resources/sample_csv.csv

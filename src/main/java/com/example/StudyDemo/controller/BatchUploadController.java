@@ -145,15 +145,30 @@ public class BatchUploadController {
                         productList,
                         response);
                 return null;
-            } else {
-                if (errInformation.isEmpty()) {
-                    String dbError = batchService.validateDbRule(action, productCode);
+            }
 
-                    if (!dbError.isEmpty()) {
-                        errorCount++;
-                        errInformation += dbError + " (行番号: " + lineNumber + ");";
-                    }
+            for (HashMap<String, Object> productMap : productList) {
+                String action = (String) productMap.get("action");
+                String productCode = (String) productMap.get("productCode");
+
+                String dbError = batchService.validateDbRule(action, productCode);
+
+                if (!dbError.isEmpty()) {
+                    errorCount++;
+                    productMap.put("error", dbError);
                 }
+            }
+
+            if (errorCount > 0) {
+                System.out.println("CSVファイルのDB検証中に " + errorCount + " 件のエラーが発生しました");
+                DoCsv doCsv = new DoCsv();
+                doCsv.exportCsv(
+                        new String[] { "処理区分", "商品コード", "商品名", "価格", "在庫数", "エラー内容" },
+                        new String[] { "action", "productCode", "name", "price", "stock", "error" },
+                        "CSVアップロードエラー_" + System.currentTimeMillis(),
+                        productList,
+                        response);
+                return null;
             }
             batchService.processCsv(productList);
             return ResponseEntity.ok("CSVアップロード成功");
