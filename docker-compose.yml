@@ -1,20 +1,42 @@
-app:
-  build: .
+services:
 
-  container_name: studydemo-app
+  app:
+    build: .
 
-  restart: unless-stopped
+    container_name: studydemo-app
 
-  depends_on:
-    mysql:
-      condition: service_healthy
+    restart: unless-stopped
 
-  ports:
-    - "8080:8080"
+    depends_on:
+      mysql:
+        condition: service_healthy
 
-  environment:
-    SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/studydemo?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Tokyo
-    SPRING_DATASOURCE_USERNAME: root
-    SPRING_DATASOURCE_PASSWORD: springboot
+    ports:
+      - "8080:8080"
 
-    SPRING_DATASOURCE_HIKARI_INITIALIZATION_FAIL_TIMEOUT: -1
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/studydemo?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Tokyo
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: springboot
+      SPRING_DATASOURCE_HIKARI_INITIALIZATION_FAIL_TIMEOUT: -1
+
+  mysql:
+    image: mysql:8.0
+
+    container_name: studydemo-mysql
+
+    restart: unless-stopped
+
+    ports:
+      - "3307:3306"
+
+    environment:
+      MYSQL_ROOT_PASSWORD: springboot
+      MYSQL_DATABASE: studydemo
+
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-pspringboot" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
