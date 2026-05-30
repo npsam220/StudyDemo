@@ -11,6 +11,10 @@
 
     <!-- axios -->
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+  axios.defaults.xsrfCookieName = "XSRF-TOKEN";
+  axios.defaults.xsrfHeaderName = "X-XSRF-TOKEN";
+</script>
 </head>
 
 <body>
@@ -19,6 +23,9 @@
 <script type="text/babel">
 
     function App() {
+      React.useEffect(() => {
+        axios.get("/csrf");
+      }, []);
 
       const [id, setId] = React.useState("");
 

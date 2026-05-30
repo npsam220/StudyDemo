@@ -9,6 +9,10 @@
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
   <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+  axios.defaults.xsrfCookieName = "XSRF-TOKEN";
+  axios.defaults.xsrfHeaderName = "X-XSRF-TOKEN";
+</script>
 </head>
 
 <body>
@@ -16,6 +20,9 @@
 
   <script type="text/babel">
   function App() {
+      React.useEffect(() => {
+        axios.get("/csrf");
+      }, []);
     // 編集対象の商品データをsessionStorageから取得
     const savedProduct = sessionStorage.getItem("editProduct");
     // JSON文字列をオブジェクトに変換して初期値とする

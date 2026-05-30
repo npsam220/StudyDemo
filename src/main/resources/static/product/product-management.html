@@ -9,6 +9,10 @@
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
   <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    axios.defaults.xsrfCookieName = "XSRF-TOKEN";
+    axios.defaults.xsrfHeaderName = "X-XSRF-TOKEN";
+  </script>
   <link rel="stylesheet" href="product.css">
 </head>
 
@@ -30,11 +34,22 @@
           .then(res => res.json())
           .then(data => {
             const role = data.roles[0].authority.replace("ROLE_", "");
-            document.getElementById("user-info").innerHTML =
-              `ログイン中：${data.username}（${role}）
-           <form action="/logout" method="post" style="display:inline;">
-             <button style="margin-left:10px;">ログアウト</button>
-           </form>`;
+            const userInfo = document.getElementById("user-info");
+            userInfo.textContent = "";
+            const loginText = document.createTextNode(
+              `ログイン中：${data.username}（${role}）`
+            );
+            const logoutBtn = document.createElement("button");
+            logoutBtn.textContent = "ログアウト";
+            logoutBtn.style.marginLeft = "10px";
+            userInfo.appendChild(loginText);
+            userInfo.appendChild(logoutBtn);
+
+            logoutBtn.onclick = async () => {
+              await axios.get("/csrf");
+              await axios.post("/logout");
+              location.href = "/login?logout";
+            };
           })
           .catch(() => {
             document.getElementById("user-info").innerText = "未ログイン";
@@ -42,6 +57,9 @@
 
       });
     function App() {
+      React.useEffect(() => {
+        axios.get("/csrf");
+      }, []);
       function downloadSampleCsv() {
         window.location.href = "/resources/sample_csv.csv";
       }

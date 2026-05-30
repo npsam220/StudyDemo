@@ -9,6 +9,8 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 
 @Configuration
 public class SecurityConfig {
@@ -20,45 +22,45 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http
-            .csrf(csrf -> csrf.disable())
+                .csrf(csrf -> csrf
+                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                        .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler()))
 
-            .authorizeHttpRequests(auth -> auth
+                .authorizeHttpRequests(auth -> auth
 
-             // 🔓 Swagger（最上面）
-            .requestMatchers(
-               "/swagger-ui.html",
-                "/swagger-ui/**",
-               "/v3/api-docs/**"
-            ).permitAll()
-           .requestMatchers("/favicon.ico").permitAll()
-            // 🔓 公開頁面
-           .requestMatchers("/", "/index.html").permitAll()
-           .requestMatchers("/product/product-query.html").permitAll()
+                        // 🔓 Swagger（最上面）
+                        .requestMatchers(
+                                "/swagger-ui.html",
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**")
+                        .permitAll()
+                        .requestMatchers("/favicon.ico").permitAll()
+                        // 🔓 公開頁面
+                        .requestMatchers("/", "/index.html").permitAll()
+                        .requestMatchers("/product/product-query.html").permitAll()
 
-            // 🔓 公開 API
-           .requestMatchers(HttpMethod.GET, "/products/search").permitAll()
+                        // 🔓 公開 API
+                        .requestMatchers(HttpMethod.GET, "/products/search").permitAll()
 
-            // 🔒 管理畫面（ADMIN）
-            .requestMatchers("/product/product-management.html").hasRole("ADMIN")
+                        // 🔒 管理畫面（ADMIN）
+                        .requestMatchers("/product/product-management.html").hasRole("ADMIN")
 
-            // 🔒 CRUD API（ADMIN）
-            .requestMatchers(HttpMethod.POST, "/products/**").hasRole("ADMIN")
-            .requestMatchers(HttpMethod.PUT, "/products/**").hasRole("ADMIN")
-            .requestMatchers(HttpMethod.DELETE, "/products/**").hasRole("ADMIN")
+                        // 🔒 CRUD API（ADMIN）
+                        .requestMatchers(HttpMethod.POST, "/products/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/products/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/products/**").hasRole("ADMIN")
 
-            // 🔒 其他全部需要登入
-             .anyRequest().authenticated()
+                        // 🔒 其他全部需要登入
+                        .anyRequest().authenticated()
 
-            
-            )
+                )
 
-            // 🔐 フォームログイン（現在使用）
-            .formLogin(form -> form
-                .defaultSuccessUrl("/index.html", true)
-                .permitAll()
-            )
+                // 🔐 フォームログイン（現在使用）
+                .formLogin(form -> form
+                        .defaultSuccessUrl("/index.html", true)
+                        .permitAll())
 
-            .logout(logout -> logout.permitAll());
+                .logout(logout -> logout.permitAll());
 
         return http.build();
     }
@@ -66,23 +68,23 @@ public class SecurityConfig {
     /**
      * ===== 🔴 httpBasic版（API用・今は未使用） =====
      */
-/*
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-
-        http
-            .csrf(csrf -> csrf.disable())
-
-            .authorizeHttpRequests(auth -> auth
-                .anyRequest().authenticated()
-            )
-
-            // 🔐 Basic認証
-            .httpBasic();
-
-        return http.build();
-    }
-*/
+    /*
+     * @Bean
+     * public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+     * 
+     * http
+     * .csrf(csrf -> csrf.disable())
+     * 
+     * .authorizeHttpRequests(auth -> auth
+     * .anyRequest().authenticated()
+     * )
+     * 
+     * // 🔐 Basic認証
+     * .httpBasic();
+     * 
+     * return http.build();
+     * }
+     */
 
     /**
      * 🔑 認証マネージャー
@@ -91,8 +93,7 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(
             HttpSecurity http,
             PasswordEncoder passwordEncoder,
-            CustomUserDetailsService userDetailsService
-    ) throws Exception {
+            CustomUserDetailsService userDetailsService) throws Exception {
 
         return http.getSharedObject(AuthenticationManagerBuilder.class)
                 .userDetailsService(userDetailsService)
