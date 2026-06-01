@@ -34,10 +34,23 @@ build/
 *.log
 *.gz
 .DS_Store
-upload_files/
-download_files/
+
+### Upload / Download ###
+upload_files/**
+download_files/**
+
+# 保留資料夾
+!upload_files/
+!download_files/
+!download_files/batch/
+
+# 保留 gitkeep
+!upload_files/.gitkeep
+!download_files/.gitkeep
+!download_files/batch/.gitkeep
 
 ### CSV ###
 *.csv
-# except sample
+
+# 保留範例檔
 !src/main/resources/static/resources/sample_csv.csv
