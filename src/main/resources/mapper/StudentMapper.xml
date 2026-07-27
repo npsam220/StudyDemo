@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.StudyDemo.mapper.StudentMapper">
+
+    <select id="search"
+        parameterType="com.example.StudyDemo.entity.Student"
+        resultType="com.example.StudyDemo.entity.Student"> SELECT * FROM student <where>
+
+            <if test="studentNo != null and studentNo != ''"> AND student_no = #{studentNo} </if>
+
+            <if
+                test="studentName != null and studentName != ''"> AND student_name = #{studentName} </if>
+
+        </where>
+
+    </select>
+    <update id="update" parameterType="com.example.StudyDemo.entity.Student"> UPDATE student SET
+        student_no = #{studentNo}, student_name = #{studentName}, gender = #{gender}, birthday =
+        #{birthday}, email = #{email}, phone = #{phone}, department = #{department} WHERE student_id
+        = #{studentId} </update>
+    <insert id="create" parameterType="com.example.StudyDemo.entity.Student"> INSERT INTO student
+        (student_no, student_name, gender, birthday, email, phone, department) VALUES (#{studentNo},
+        #{studentName}, #{gender}, #{birthday}, #{email}, #{phone}, #{department})</insert>
+</mapper>

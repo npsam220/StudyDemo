@@ -1,0 +1,138 @@
+<!-- Created with Jaspersoft Studio version 7.0.6.final using JasperReports Library version 7.0.6-5d2a603fdc6b3db8f842a83383e594f41891534d  -->
+<jasperReport name="StudentReport" language="java" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="54756c69-cf47-404c-a101-dd1ea1cc8062">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="StudyDemoAdapter"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<query language="sql"><![CDATA[select
+  student_id as studentId,
+  student_no as studentNo,
+  student_name as studentName,
+  gender,
+  birthday,
+  email,
+  phone,
+  department
+from student]]></query>
+	<field name="studentId" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="student_id"/>
+		<property name="com.jaspersoft.studio.field.label" value="studentId"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="student"/>
+	</field>
+	<field name="studentNo" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="student_no"/>
+		<property name="com.jaspersoft.studio.field.label" value="studentNo"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="student"/>
+	</field>
+	<field name="studentName" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="student_name"/>
+		<property name="com.jaspersoft.studio.field.label" value="studentName"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="student"/>
+	</field>
+	<field name="gender" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="gender"/>
+		<property name="com.jaspersoft.studio.field.label" value="gender"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="student"/>
+	</field>
+	<field name="birthday" class="java.sql.Timestamp">
+		<property name="com.jaspersoft.studio.field.name" value="birthday"/>
+		<property name="com.jaspersoft.studio.field.label" value="birthday"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="student"/>
+	</field>
+	<field name="email" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="email"/>
+		<property name="com.jaspersoft.studio.field.label" value="email"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="student"/>
+	</field>
+	<field name="phone" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="phone"/>
+		<property name="com.jaspersoft.studio.field.label" value="phone"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="student"/>
+	</field>
+	<field name="department" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="department"/>
+		<property name="com.jaspersoft.studio.field.label" value="department"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="student"/>
+	</field>
+	<background splitType="Stretch"/>
+	<title height="47" splitType="Stretch">
+		<element kind="textField" uuid="0cad810d-396a-46aa-b4e5-1e9a9200451f" x="190" y="0" width="180" height="40" fontName="Noto Sans TC" hTextAlign="Center" vTextAlign="Middle">
+			<expression><![CDATA["学生情報管理"]]></expression>
+		</element>
+		<element kind="textField" uuid="cd58dabb-3b5e-458a-accd-5920568eb0ac" x="370" y="5" width="100" height="30" fontName="Noto Sans TC" pattern="MMMMM dd, yyyy" hTextAlign="Center" vTextAlign="Middle">
+			<expression><![CDATA[new java.util.Date()]]></expression>
+		</element>
+		<element kind="line" uuid="b8c38a28-454f-4c16-9b5d-680a1719d8ce" x="0" y="0" width="545" height="1">
+			<pen lineWidth="2.0" lineStyle="Double"/>
+		</element>
+	</title>
+	<pageHeader height="45" splitType="Stretch">
+		<element kind="textField" uuid="dfee7222-d502-474e-bc20-4fc785173323" x="440" y="10" width="120" height="20" fontName="Noto Sans TC">
+			<expression><![CDATA[$V{PAGE_NUMBER}]]></expression>
+		</element>
+		<element kind="line" uuid="251f73bd-8fee-4650-bab5-fc0ac383b84a" x="0" y="0" width="545" height="1">
+			<pen lineWidth="2.0" lineStyle="Double"/>
+		</element>
+		<element kind="line" uuid="53d97514-a1bf-433f-8750-c06b7537fb9c" x="5" y="44" width="545" height="1">
+			<pen lineWidth="2.0" lineStyle="Dashed"/>
+		</element>
+	</pageHeader>
+	<columnHeader height="57" splitType="Stretch">
+		<element kind="staticText" uuid="ce39a566-d7a2-428b-8662-9cb3dbc03117" x="0" y="0" width="60" height="31" fontName="Noto Sans TC" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[システムID]]></text>
+			<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="fb862bd6-cf83-4c4f-ba84-f319d61f30b8"/>
+		</element>
+		<element kind="staticText" uuid="aa956efb-d60d-4f4b-a062-43b154046cab" key="" x="60" y="1" width="100" height="31" fontName="Noto Sans TC" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[学生ID]]></text>
+			<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="006a463c-93cb-4819-a44f-6d0760bda658"/>
+		</element>
+		<element kind="staticText" uuid="5b689b8d-2b83-4dfa-8506-34bf4e97727c" x="160" y="2" width="100" height="30" fontName="Noto Sans TC" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[名前]]></text>
+			<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="399b69f4-0de7-430d-84fe-847ba9ab440d"/>
+		</element>
+		<element kind="staticText" uuid="e95d7875-b2e8-42b3-bd8e-abd940c98be8" x="260" y="0" width="100" height="30" fontName="Noto Sans TC" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[性別]]></text>
+			<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="fa67db8c-47d1-4af7-ab2e-c8ff12a9eb57"/>
+		</element>
+		<element kind="staticText" uuid="eb22a651-a205-4b4b-8c3d-1aa4953792ec" x="360" y="0" width="100" height="30" fontName="Noto Sans TC" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[email]]></text>
+			<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="05316768-3ebd-4c2f-9cdc-1c4bdc477206"/>
+		</element>
+		<element kind="staticText" uuid="6d140844-4fc8-4248-8a8e-19ab2f16d654" x="460" y="1" width="100" height="30" fontName="Noto Sans TC" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[部門]]></text>
+			<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="b0bb150b-f8d8-43ba-bec1-c0cda4500580"/>
+		</element>
+		<element kind="line" uuid="4bf1ab7e-0483-44e2-b751-937fd5d4f7a1" x="5" y="56" width="545" height="1">
+			<pen lineWidth="2.0" lineStyle="Dashed"/>
+		</element>
+	</columnHeader>
+	<detail>
+		<band height="33" splitType="Stretch">
+			<element kind="textField" uuid="1eef69ae-cc34-48ab-9c79-0ba54a4ebb7a" x="0" y="0" width="60" height="30" fontName="Noto Sans TC" hTextAlign="Center" vTextAlign="Middle">
+				<expression><![CDATA[$F{studentId}]]></expression>
+				<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="fb862bd6-cf83-4c4f-ba84-f319d61f30b8"/>
+			</element>
+			<element kind="textField" uuid="3a696ff5-e170-431b-97d8-e37ac29af1ec" x="60" y="0" width="100" height="30" fontName="Noto Sans TC" hTextAlign="Center" vTextAlign="Middle">
+				<expression><![CDATA[$F{studentNo}]]></expression>
+				<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="006a463c-93cb-4819-a44f-6d0760bda658"/>
+			</element>
+			<element kind="textField" uuid="cc12e74a-84d0-4c44-85c8-dc2178872de9" x="160" y="0" width="100" height="30" fontName="Noto Sans TC" hTextAlign="Center" vTextAlign="Middle">
+				<expression><![CDATA[$F{studentName}]]></expression>
+				<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="399b69f4-0de7-430d-84fe-847ba9ab440d"/>
+			</element>
+			<element kind="textField" uuid="c9af9fe1-6b3a-4453-af5b-eae1a10c9ad9" x="260" y="0" width="100" height="30" fontName="Noto Sans TC" hTextAlign="Center" vTextAlign="Middle">
+				<expression><![CDATA["M".equals($F{gender}) ? "男" : "女"]]></expression>
+				<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="fa67db8c-47d1-4af7-ab2e-c8ff12a9eb57"/>
+			</element>
+			<element kind="textField" uuid="a51ee322-4540-4962-9c88-dab3f5c85e5d" x="360" y="0" width="100" height="30" fontName="Noto Sans TC" hTextAlign="Center" vTextAlign="Middle">
+				<expression><![CDATA[$F{email}]]></expression>
+				<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="05316768-3ebd-4c2f-9cdc-1c4bdc477206"/>
+			</element>
+			<element kind="textField" uuid="5340a43f-7ca5-4168-94e4-221dc9606e5f" x="460" y="0" width="100" height="30" fontName="Noto Sans TC" hTextAlign="Center" vTextAlign="Middle">
+				<expression><![CDATA[$F{department}]]></expression>
+				<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="b0bb150b-f8d8-43ba-bec1-c0cda4500580"/>
+			</element>
+		</band>
+	</detail>
+	<columnFooter height="45" splitType="Stretch"/>
+	<pageFooter height="54" splitType="Stretch"/>
+	<summary height="42" splitType="Stretch"/>
+</jasperReport>

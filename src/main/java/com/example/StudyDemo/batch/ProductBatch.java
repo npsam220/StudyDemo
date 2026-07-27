@@ -11,10 +11,6 @@ import java.util.List;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-
-
-
-
 @Component
 public class ProductBatch {
 
@@ -26,12 +22,12 @@ public class ProductBatch {
 
     // 毎日午前2時にCSV出力を実行
     @Scheduled(cron = "0 0 2 * * ?")
-    //@Scheduled(fixedRate = 60000) // 1分ごとに実行（テスト用）
+    //@Scheduled(fixedRate = 30000) // 1分ごとに実行（テスト用）
     public void exportCsvBatch() {
 
         List<Product> list = service.findAll();
         String path = "download_files/";
-           new File(path).mkdirs();
+        new File(path).mkdirs();
         String filename = path + "products_batch_" +
                 LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss")) +
                 ".csv";
@@ -43,12 +39,11 @@ public class ProductBatch {
 
             for (Product p : list) {
                 writer.println(
-                    safe(p.getId()) + "," +
-                    csv(p.getProductCode()) + "," +
-                    csv(p.getName()) + "," +
-                    safe(p.getPrice()) + "," +
-                    safe(p.getStock())
-                );
+                        safe(p.getId()) + "," +
+                                csv(p.getProductCode()) + "," +
+                                csv(p.getName()) + "," +
+                                safe(p.getPrice()) + "," +
+                                safe(p.getStock()));
             }
 
             System.out.println("Batch CSV export success: " + filename);
@@ -63,7 +58,8 @@ public class ProductBatch {
     }
 
     private String csv(String str) {
-        if (str == null) return "";
+        if (str == null)
+            return "";
         return "\"" + str.replace("\"", "\"\"") + "\"";
     }
 }

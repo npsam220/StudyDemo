@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>学生情報の編集</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        axios.defaults.xsrfCookieName = "XSRF-TOKEN";
+        axios.defaults.xsrfHeaderName = "X-XSRF-TOKEN";
+    </script>
+
+</head>
+
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+        function StudentCreate() {
+            React.useEffect(() => {
+                axios.get("/csrf");
+            }, []);
+            const [student, setStudent] = React.useState({
+                studentNo: "",
+                studentName: "",
+                gender: "",
+                department: "",
+                email: "",
+                phone: "",
+                birthday: ""
+            });
+            // 入力値の変更を反映するためのハンドラ
+            const handleChange = (e) => {
+                const { name, value } = e.target;
+                setStudent((prevStudent) => ({
+                    ...prevStudent,
+                    [name]: value
+                }));
+            };
+
+            // 学生情報を作成するためのハンドラ
+            const handleCreate = async () => {
+                const response = await axios.post(
+                    `/students/create`,
+                    student
+                );
+                try {
+                    if (response.status === 200) {
+                        alert(response.data.message || "更新成功!!!");
+                        location.href = "/student/student-management.html";
+                    } else {
+                        alert(response.data.message || "更新失敗!!!");
+                    }
+                } catch (error) {
+                    console.error(error);
+                    alert("学生情報の作成中にエラーが発生しました。");
+                }
+            };
+            return (
+                <div className="min-h-screen bg-slate-50">
+                    <main className="mx-auto max-w-4xl px-4 py-8">
+                        <div className="mb-6 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                            <div>
+                                <h1 className="text-3xl font-bold text-slate-900">学生情報の作成</h1>
+                                <p className="mt-1 text-sm text-slate-500">学生の基本情報を入力してください。</p>
+                            </div>
+                            <button
+                                className="inline-flex items-center justify-center rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-200"
+                                type="button"
+                                onClick={() => location.href = "/student/student-management.html"}
+                            >
+                                一覧へ戻る
+                            </button>
+                        </div>
+                        <div className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
+                            <div className="grid gap-5 p-6 md:grid-cols-2">
+
+                                <div>
+                                    <label className="mb-1 block text-sm font-medium text-slate-700" htmlFor="studentNo">学籍番号</label>
+                                    <input
+                                        className="block w-full rounded-md border border-slate-200 bg-slate-100 px-3 py-2 text-sm text-slate-600 shadow-sm"
+                                        type="text"
+                                        name="studentNo"
+                                        id="studentNo"
+                                        value={student.studentNo}
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                                <div>
+                                    <label className="mb-1 block text-sm font-medium text-slate-700" htmlFor="studentName">名前</label>
+                                    <input
+                                        className="block w-full rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-900 shadow-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                                        type="text"
+                                        name="studentName"
+                                        id="studentName"
+                                        value={student.studentName}
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                                <div>
+                                    <label className="mb-1 block text-sm font-medium text-slate-700" htmlFor="gender">性別</label>
+                                    <select
+                                        className="block w-full rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-900 shadow-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                                        name="gender"
+                                        id="gender"
+                                        value={student.gender}
+                                        onChange={handleChange}
+                                    >
+                                        <option value="">選択してください</option>
+                                        <option value="M">男性</option>
+                                        <option value="F">女性</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label className="mb-1 block text-sm font-medium text-slate-700" htmlFor="department">学部・学科</label>
+                                    <input
+                                        className="block w-full rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-900 shadow-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                                        type="text"
+                                        name="department"
+                                        id="department"
+                                        value={student.department}
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                                <div>
+                                    <label className="mb-1 block text-sm font-medium text-slate-700" htmlFor="email">email</label>
+                                    <input
+                                        className="block w-full rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-900 shadow-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                                        type="email"
+                                        name="email"
+                                        id="email"
+                                        value={student.email}
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                                <div>
+                                    <label className="mb-1 block text-sm font-medium text-slate-700" htmlFor="phone">電話番号</label>
+                                    <input
+                                        className="block w-full rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-900 shadow-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                                        type="text"
+                                        name="phone"
+                                        id="phone"
+                                        value={student.phone}
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                                <div>
+                                    <label className="mb-1 block text-sm font-medium text-slate-700" htmlFor="birthday">生日</label>
+                                    <input
+                                        className="block w-full rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-900 shadow-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                                        type="date"
+                                        name="birthday"
+                                        id="birthday"
+                                        value={student.birthday}
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="flex flex-col-reverse gap-3 border-t border-slate-200 bg-slate-50 px-6 py-4 sm:flex-row sm:justify-end">
+                                <button
+                                    className="inline-flex items-center justify-center rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-200"
+                                    type="button"
+                                    onClick={() => location.href = "/student/student-management.html"}
+                                >
+                                    キャンセル
+                                </button>
+                                <button
+                                    className="inline-flex items-center justify-center rounded-md bg-blue-600 px-5 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                                    type="button"
+                                    onClick={handleCreate}
+                                >
+                                    作成
+                                </button>
+                            </div>
+                        </div>
+                    </main>
+                </div>
+            );
+        }
+
+        ReactDOM.render(<StudentCreate />, document.getElementById('root'));
+    </script>
+</body>

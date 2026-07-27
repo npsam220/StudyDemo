@@ -46,7 +46,7 @@ public class BatchConfig {
             @Value("#{jobParameters['name']}") String name,
             @Value("#{jobParameters['pricebegin']}") String pricebegin,
             @Value("#{jobParameters['priceend']}") String priceend) {
-
+        // 🔧 バッチ設定（JPAリーダーの定義）
         JpaPagingItemReader<Product> reader = new JpaPagingItemReader<>();
         reader.setName("productReader");
         reader.setEntityManagerFactory(emf);

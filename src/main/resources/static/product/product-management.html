@@ -36,6 +36,7 @@
             const role = data.roles[0].authority.replace("ROLE_", "");
             const userInfo = document.getElementById("user-info");
             userInfo.textContent = "";
+            //因為 createTextNode 會把內容當文字，不會當 HTML。所以這裡用 template string 來組合登入資訊的文字內容。
             const loginText = document.createTextNode(
               `ログイン中：${data.username}（${role}）`
             );
@@ -73,6 +74,7 @@
       });
       // 🔹 検索結果を管理するstate
       const [products, setProducts] = React.useState([]);
+      // 🔹 ページネーション用のstate（オプション）
       function handleChange(e) {
         const { name, value } = e.target;
         setSearch(prevSearch => ({

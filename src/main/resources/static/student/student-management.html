@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>学生管理システム</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        axios.defaults.xsrfCookieName = "XSRF-TOKEN";
+        axios.defaults.xsrfHeaderName = "X-XSRF-TOKEN";
+    </script>
+
+</head>
+
+<body>
+    <div id="root"></div>
+    　　
+    <script type="text/babel">
+        function App() {
+            // CSRFトークンを取得するための初期化処理
+            React.useEffect(() => {
+                axios.get("/csrf");
+            }, []);
+            // 学生検索条件を管理するstate
+            const [search, setSearch] = React.useState({
+                studentNo: "",
+                studentName: ""
+            });
+            // 学生データを管理するstate
+            const [students, setStudents] = React.useState([]);
+            // 🔹 入力変更時の処理
+            // 各inputの値をsearch stateに反映する
+            const handleChange = (e) => {
+                setSearch({
+                    ...search, // 既存の値を維持
+                    [e.target.name]: e.target.value // 対応する項目だけ更新
+                });
+            };
+            const searchStudent = async () => {
+
+                try {
+                    const response = await axios.get("/students/search", {
+                        params: search
+                    });
+                    // 🔹 検索結果をstudents stateに反映する
+                    setStudents(response.data);
+
+                } catch (error) {
+                    console.error(error);
+                }
+            }
+            // 🔹 検索ボタン押下時の処理
+            const handleSearch = () => {
+                searchStudent();
+            };
+            // 初回レンダリング時に全学生データを取得する
+            React.useEffect(() => {
+                searchStudent();
+            }, []);
+
+
+            function handleDetail(student) {
+                // 詳細ボタン押下時の処理
+                sessionStorage.setItem("StudentDetail", JSON.stringify(student));
+                location.href = "/student/student-detail.html";
+            }
+
+            function handleEdit(student) {
+                // 編集ボタン押下時の処理
+                sessionStorage.setItem("StudentEdit", JSON.stringify(student));
+                location.href = "/student/student-update.html";
+            }
+
+            function handleCreate() {
+                // 新規登録ボタン押下時の処理
+                sessionStorage.removeItem("StudentEdit");
+                location.href = "/student/student-create.html";
+            }
+            return (
+                <div className="mx-auto max-w-6xl px-4 py-8">
+                    <h1 className="mb-8 text-center text-3xl font-bold text-slate-900">学生管理システム</h1>
+
+                    <div className="mb-6 grid gap-4 rounded-lg border border-slate-200 bg-white p-4 shadow-sm md:grid-cols-[1fr_1fr_auto] md:items-end">
+                        <div>
+                            <label className="mb-1 block text-sm font-medium text-slate-700" htmlFor="studentNo">学籍番号</label>
+                            <input
+                                className="block w-full rounded-md border border-slate-300 px-3 py-2 text-sm shadow-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                                type="text"
+                                name="studentNo"
+                                id="studentNo"
+                                value={search.studentNo}
+                                onChange={handleChange}
+                            />
+                        </div>
+                        <div>
+                            <label className="mb-1 block text-sm font-medium text-slate-700" htmlFor="studentName">名前</label>
+                            <input
+                                className="block w-full rounded-md border border-slate-300 px-3 py-2 text-sm shadow-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                                type="text"
+                                name="studentName"
+                                id="studentName"
+                                value={search.studentName}
+                                onChange={handleChange}
+                            />
+                        </div>
+                        <div>
+                            <button
+                                className="inline-flex w-full items-center justify-center rounded-md bg-blue-600 px-5 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300 md:w-auto"
+                                type="button"
+                                onClick={handleSearch}
+                            >
+                                検索
+                            </button>
+                            <button
+                                className="inline-flex w-full items-center justify-center rounded-md bg-blue-600 px-5 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300 md:w-auto"
+                                type="button"
+                                onClick={handleCreate}
+                            >
+                                新規登録
+                            </button>
+
+                            <a
+                                href="/students/report"
+                                className="inline-flex w-full items-center justify-center rounded-md bg-blue-600 px-5 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300 md:w-auto"
+                            >
+                                レポート出力
+                            </a>
+                        </div>
+                    </div>
+
+                    <div className="overflow-x-auto rounded-lg border border-slate-200 bg-white shadow-sm">
+                        <table className="min-w-full divide-y divide-slate-200 text-sm">
+                            <thead className="bg-slate-900 text-white">
+                                <tr>
+                                    <th className="whitespace-nowrap px-4 py-3 text-left font-semibold">功能</th>
+                                    <th className="whitespace-nowrap px-4 py-3 text-left font-semibold">学籍番号</th>
+                                    <th className="whitespace-nowrap px-4 py-3 text-left font-semibold">名前</th>
+                                    <th className="whitespace-nowrap px-4 py-3 text-left font-semibold">性别</th>
+                                    <th className="whitespace-nowrap px-4 py-3 text-left font-semibold">学部・学科</th>
+                                    <th className="whitespace-nowrap px-4 py-3 text-left font-semibold">email</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-slate-200">
+                                {students.map((student) => (
+                                    <tr className="transition hover:bg-slate-50" key={student.studentNo}>
+                                        <td className="whitespace-nowrap px-4 py-3">
+                                            <div className="flex flex-wrap gap-2">
+                                                <button
+                                                    type="button"
+                                                    onClick={() => handleDetail(student)}
+                                                    className="rounded-md bg-cyan-500 px-3 py-1.5 text-xs font-medium text-white transition hover:bg-cyan-600 focus:outline-none focus:ring-2 focus:ring-cyan-200"
+                                                >
+                                                    詳細
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => handleEdit(student)}
+                                                    className="rounded-md bg-amber-500 px-3 py-1.5 text-xs font-medium text-white transition hover:bg-amber-600 focus:outline-none focus:ring-2 focus:ring-amber-200">
+                                                    編集
+                                                </button>
+
+                                                <a
+                                                    href={`/students/delete/${student.studentNo}`}
+                                                    className="rounded-md bg-red-600 px-3 py-1.5 text-xs font-medium text-white transition hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-200"
+                                                >
+                                                    削除
+                                                </a>
+                                            </div>
+                                        </td>
+                                        <td className="whitespace-nowrap px-4 py-3 text-slate-900">{student.studentNo}</td>
+                                        <td className="whitespace-nowrap px-4 py-3 text-slate-900">{student.studentName}</td>
+                                        <td className="whitespace-nowrap px-4 py-3 text-slate-700">{student.gender}</td>
+                                        <td className="whitespace-nowrap px-4 py-3 text-slate-700">{student.department}</td>
+                                        <td className="whitespace-nowrap px-4 py-3 text-slate-700">{student.email}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            );
+        }
+        ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+    </script>
+</body>
+
+</html>

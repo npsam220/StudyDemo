@@ -14,8 +14,12 @@
 - Java 17
 - Spring Boot
 - Spring Data JPA（Hibernate）
+- MyBatis
+- Flyway
 - Spring Security
 - Spring Batch
+- JasperReports
+- Redis
 
 ### Frontend
 - React（CDN）
@@ -51,16 +55,26 @@
 - 未認証ユーザーのアクセス制限
 
 ---
+### 🔹 学生管理機能
+- 学生情報の登録・検索・更新
+- 学籍番号および氏名による条件検索
+- MyBatis XML Mapperを利用したデータベース操作
+- JasperReportsを利用した学生情報のPDF出力
+- Redisによる検索結果のキャッシュ
 
 ## 🏗 システム構成
-Frontend（React）
-↓
+
+```text
+Frontend（React / HTML）
+        ↓
 Controller
-↓
+        ↓
 Service
-↓
-Repository（JPA）
-↓
+        ↓
+Repository（Spring Data JPA）
+または
+Mapper（MyBatis）
+        ↓
 MySQL
 
 ---
@@ -73,14 +87,38 @@ MySQL
 - RESTful API設計
 - フロントエンドとバックエンドを分離
 - Docker Compose による環境統一
+- Spring Data JPAとMyBatisを用途に応じて使い分け
+- MyBatis XML MapperによるSQLとJavaコードの分離
+- Flywayによるデータベーススキーマのバージョン管理
+- マイグレーションファイルを利用したテーブルの自動作成
+- Redisによる学生検索結果のキャッシュ
+- JasperReportsによる学生情報のPDF帳票出力
+- Spring BatchによるCSV一括処理
+- トランザクション管理によるデータ整合性の保証
+- Docker Composeによる開発環境の統一
 
 ---
+## 🗄 データベースマイグレーション
+
+本プロジェクトでは、Flywayを利用してデータベーススキーマを管理しています。
+
+アプリケーション起動時に、以下のマイグレーションファイルがバージョン順に適用されます。
+
+- `V1__create_student.sql`：学生テーブルの作成
+- `V2__create_teacher.sql`：教師テーブルの作成
+- `V3__create_course.sql`：コーステーブルの作成
+
+マイグレーションファイルは以下に配置しています。
+
+`src/main/resources/db/migration`
+
 
 ## 🚀 起動方法（Docker推奨）
 
 ```bash
-# ビルド
 ./mvnw clean package
+docker compose up -d --build
+```
 
 # 起動
 docker compose up -d --build
