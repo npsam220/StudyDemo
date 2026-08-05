@@ -16,6 +16,7 @@ import java.util.Map;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -110,4 +111,18 @@ public class StudentController {
         return map;
     }
 
+    @DeleteMapping("/{id}")
+    @Operation(summary = "学生を削除")
+    public Map<String, Object> delete(@PathVariable Integer id) {
+        int result = studentService.delete(id);
+        Map<String, Object> map = new HashMap<>();
+        if (result > 0) {
+            map.put("success", true);
+            map.put("message", "学生情報を削除しました");
+        } else {
+            map.put("success", false);
+            map.put("message", "学生情報の削除に失敗しました");
+        }
+        return map;
+    }
 }

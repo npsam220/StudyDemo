@@ -22,4 +22,7 @@
     <insert id="create" parameterType="com.example.StudyDemo.entity.Student"> INSERT INTO student
         (student_no, student_name, gender, birthday, email, phone, department) VALUES (#{studentNo},
         #{studentName}, #{gender}, #{birthday}, #{email}, #{phone}, #{department})</insert>
+
+    <delete id="delete" parameterType="java.lang.Integer"> DELETE FROM student WHERE student_id =
+        #{id} </delete>
 </mapper>

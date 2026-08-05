@@ -48,4 +48,9 @@ public class StudentService {
         // TODO Auto-generated method stub
         return studentMapper.create(student);
     }
+
+    public int delete(Integer id) {
+        // TODO Auto-generated method stub
+        return studentMapper.delete(id);
+    }
 }

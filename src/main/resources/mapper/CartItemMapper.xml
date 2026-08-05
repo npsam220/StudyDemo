@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.StudyDemo.mapper.CartItemMapper">
+  <select id="findByCartIdAndProductId"
+        resultType="com.example.StudyDemo.entity.CartItem">
+    SELECT
+      id,
+      cart_id,
+      product_id,
+      quantity,
+      created_at,
+      updated_at
+    FROM
+      cart_item
+    WHERE
+      cart_id = #{cartId}
+      AND product_id = #{productId}
+  </select>
+  <insert id="insert"
+        parameterType="com.example.StudyDemo.entity.CartItem"
+        useGeneratedKeys="true"
+        keyProperty="id">
+    INSERT INTO
+      cart_item (cart_id, product_id, quantity)
+    VALUES
+      (#{cartId}, #{productId}, #{quantity})
+  </insert>
+  <delete id="deleteByCartIdAndProductId">
+    DELETE FROM cart_item
+    WHERE
+      cart_id = #{cartId}
+      AND product_id = #{productId}
+  </delete>
+  <select id="findItemsByCartId"
+        resultType="com.example.StudyDemo.dto.cart.response.CartItemResponse">
+    SELECT
+      ci.id AS itemId,
+      ci.product_id AS productId,
+      p.product_code AS productCode,
+      p.name AS productName,
+      p.price AS price,
+      ci.quantity AS quantity,
+      p.price * ci.quantity AS subtotal
+    FROM
+      cart_item ci
+      INNER JOIN product p ON ci.product_id = p.id
+    WHERE
+      ci.cart_id = #{cartId}
+    ORDER BY
+      ci.id
+  </select>
+  <select id="findByIdAndCartId"
+        resultType="com.example.StudyDemo.entity.CartItem">
+    SELECT
+      id,
+      cart_id,
+      product_id,
+      quantity,
+      created_at,
+      updated_at
+    FROM
+      cart_item
+    WHERE
+      id = #{itemId}
+      AND cart_id = #{cartId}
+  </select>
+  <update id="updateQuantity">
+    UPDATE cart_item
+    SET
+      quantity = #{quantity},
+      updated_at = CURRENT_TIMESTAMP
+    WHERE
+      cart_id = #{cartId}
+      AND product_id = #{productId}
+  </update>
+</mapper>
